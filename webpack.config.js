@@ -7,8 +7,9 @@ module.exports = {
     entry: './src/js/app.js',
     output: {
         path: path.resolve(__dirname, 'dist'),
-        filename: 'js/[name].bundle.js',
-        clean: true, // Очищает dist перед сборкой
+        filename: 'bundle.js',
+        publicPath: './', 
+        clean: true,
     },
     mode: 'production',
     module: {
@@ -16,40 +17,35 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-env']
-                    }
-                }
+                use: 'babel-loader'
             },
             {
                 test: /\.css$/,
                 use: [MiniCssExtractPlugin.loader, 'css-loader']
             },
             {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,  // Добавляем обработку изображений
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
                 type: 'asset/resource',
                 generator: {
-                    filename: 'images/[name][ext]'  // Сохраняем в папку images
+                    filename: 'images/[name][ext]'
                 }
             }
         ]
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './index.html', 
+            template: './index.html',
             filename: 'index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: 'css/[name].css'
+            filename: 'style.css'
         }),
         new CopyWebpackPlugin({
             patterns: [
                 { 
-                    from: 'src/images',  // Откуда копировать
-                    to: 'images',        // Куда копировать в dist
-                    noErrorOnMissing: true  // Не выдавать ошибку если папки нет
+                    from: 'src/images', 
+                    to: 'images',
+                    noErrorOnMissing: true
                 }
             ]
         })
