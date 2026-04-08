@@ -1,0 +1,20 @@
+Visa
+source: https://icons8.com/icon/pFNd0FTuBU2Q/visa
+
+Mastercard
+source: https://icons8.com/icon/Sq0VNi1Afgmj/mastercard
+
+American Express
+source: https://icons8.com/icon/13607/american-express
+
+Discover
+source: https://icons8.com/icon/20798/discover-card
+
+JCB
+source: https://icons8.com/icon/13609/jcb
+
+Diners Club
+source: https://icons8.com/icon/20796/diners-club
+
+Мир
+source: https://icons8.com/icon/59239/mir
