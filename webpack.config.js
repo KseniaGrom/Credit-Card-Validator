@@ -1,53 +1,56 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-    entry: './src/js/app.js',
-    output: {
-        path: path.resolve(__dirname, 'dist'),
-        filename: 'bundle.js',
-        publicPath: './', 
-        clean: true,
+  entry: './src/js/app.js',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js',
+    clean: true,
+    publicPath: './', 
+  },
+  module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.(png|svg|jpg|jpeg|gif)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'images/[name][ext]', 
+        },
+      },
+    ],
+  },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: './src/index.html', 
+      filename: 'index.html',
+    }),
+    new MiniCssExtractPlugin({
+      filename: 'style.css', 
+    }),
+  ],
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
     },
-    mode: 'production',
-    module: {
-        rules: [
-            {
-                test: /\.js$/,
-                exclude: /node_modules/,
-                use: 'babel-loader'
-            },
-            {
-                test: /\.css$/,
-                use: [MiniCssExtractPlugin.loader, 'css-loader']
-            },
-            {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
-                generator: {
-                    filename: 'images/[name][ext]'
-                }
-            }
-        ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            template: './index.html',
-            filename: 'index.html'
-        }),
-        new MiniCssExtractPlugin({
-            filename: 'style.css'
-        }),
-        new CopyWebpackPlugin({
-            patterns: [
-                { 
-                    from: 'src/images', 
-                    to: 'images',
-                    noErrorOnMissing: true
-                }
-            ]
-        })
-    ]
+    compress: true,
+    port: 9000,
+    hot: true,
+    open: true,
+  },
 };
