@@ -1,19 +1,70 @@
 export function detectCardSystem(cardNumber) {
     const cleanNumber = cardNumber.replace(/[\s-]/g, '');
+
+    const firstTwo = cleanNumber.substring(0, 2);
+    const firstThree = cleanNumber.substring(0, 3);
+    const firstFour = cleanNumber.substring(0, 4);
+    const length = cleanNumber.length;
+
+    if ((length === 13 || length === 16 || length === 19) && firstTwo[0] === '4') {
+        return 'visa';
+    }
+
+    if (length === 15 && (firstTwo === '34' || firstTwo === '37')) {
+        return 'amex';
+    }
     
-    const patterns = {
-        mir: /^2\d{15}$/,
-        amex: /^3[47]\d{13}$/,
-        diners: /^3(?:0[0-5]|[68]\d)\d{11}$/,
-        discover: /^6(?:011|5\d{2})\d{12}$/,
-        jcb: /^35\d{14}$/,
-        mastercard: /^5[1-5]\d{14}$|^2(?:2[2-9][1-9]|[3-6]\d\d)\d{12}$/,
-        visa: /^4\d{15}$|^4\d{12}$/
-    };
+    if (length === 14) {
+        if ((firstThree >= '300' && firstThree <= '305') || firstTwo === '36' || firstTwo === '38') {
+            return 'diners';
+        }
+    }
     
-    for (const [system, pattern] of Object.entries(patterns)) {
-        if (pattern.test(cleanNumber)) {
-            return system;
+    if (length === 16) {
+        if (firstTwo >= '51' && firstTwo <= '55') {
+            return 'mastercard';
+        }
+        const firstFourNum = parseInt(firstFour);
+        if (firstFourNum >= 2221 && firstFourNum <= 2720) {
+            return 'mastercard';
+        }
+    }
+    
+    if (length >= 16 && length <= 19 && firstTwo[0] === '2') {
+        if (length === 16) {
+            const firstFourNum = parseInt(firstFour);
+            const isMastercard = (firstTwo >= '51' && firstTwo <= '55') || 
+                                 (firstFourNum >= 2221 && firstFourNum <= 2720);
+            if (!isMastercard) {
+                return 'mir';
+            }
+        } else {
+            return 'mir';
+        }
+    }
+    
+    if (length >= 16 && length <= 19) {
+        if (firstFour === '6011') {
+            return 'discover';
+        }
+        if (firstTwo === '65') {
+            return 'discover';
+        }
+        if (firstThree >= '644' && firstThree <= '649') {
+            return 'discover';
+        }
+        if (length >= 16) {
+            const firstSix = parseInt(cleanNumber.substring(0, 6));
+            if (firstSix >= 622126 && firstSix <= 622925) {
+                return 'discover';
+            }
+        }
+    }
+    
+    if (length >= 16 && length <= 19) {
+        const firstFourNum = parseInt(firstFour);
+        if (firstFourNum >= 3528 && firstFourNum <= 3589) {
+            return 'jcb';
         }
     }
     
@@ -32,3 +83,13 @@ export function getSystemName(systemCode) {
     };
     return names[systemCode] || 'Unknown';
 }
+
+export const paymentSystems = [
+    { code: 'visa', name: 'Visa' },
+    { code: 'mastercard', name: 'Mastercard' },
+    { code: 'amex', name: 'American Express' },
+    { code: 'discover', name: 'Discover' },
+    { code: 'jcb', name: 'JCB' },
+    { code: 'diners', name: 'Diners Club' },
+    { code: 'mir', name: 'Мир' }
+];

@@ -8,6 +8,7 @@ export function validateLuhn(cardNumber) {
     let sum = 0;
     let isEven = false;
     
+    // Идём справа налево
     for (let i = cleanNumber.length - 1; i >= 0; i--) {
         let digit = parseInt(cleanNumber[i], 10);
         
@@ -28,5 +29,6 @@ export function validateLuhn(cardNumber) {
 export function isValidLength(cardNumber) {
     const cleanNumber = cardNumber.replace(/[\s-]/g, '');
     const length = cleanNumber.length;
+    // Допустимые длины: 13-19 цифр
     return length >= 13 && length <= 19;
 }

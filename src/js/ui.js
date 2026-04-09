@@ -1,12 +1,35 @@
-import { detectCardSystem } from './cardDetector.js';
+import { paymentSystems, detectCardSystem } from './cardDetector.js';
 
 export class UI {
     constructor() {
-        this.cardIcons = document.querySelectorAll('.card-icon');
+        this.cardIcons = [];
         this.resultDiv = document.getElementById('result');
         this.cardInput = document.getElementById('cardNumber');
         
+        this.renderCardsIcons();
         this.initEventListeners();
+    }
+
+    renderCardsIcons() {
+        const cardsContainer = document.getElementById('cardsIcons');
+        if (!cardsContainer) return;
+        
+        cardsContainer.innerHTML = '';
+        
+        paymentSystems.forEach(system => {
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'card-icon';
+            cardDiv.dataset.card = system.code;
+            
+            const img = document.createElement('img');
+            img.src = `images/${system.code}.png`;
+            img.alt = system.name;
+            
+            cardDiv.appendChild(img);
+            cardsContainer.appendChild(cardDiv);
+            
+            this.cardIcons.push(cardDiv);
+        });
     }
     
     initEventListeners() {
@@ -57,17 +80,9 @@ export class UI {
         }, 3000);
     }
     
-    getSystemDisplayName(system) {
-        const names = {
-            visa: 'Visa',
-            mastercard: 'Mastercard',
-            amex: 'American Express',
-            discover: 'Discover',
-            jcb: 'JCB',
-            diners: 'Diners Club',
-            mir: 'Мир'
-        };
-        return names[system] || system;
+    getSystemDisplayName(systemCode) {
+        const system = paymentSystems.find(s => s.code === systemCode);
+        return system ? system.name : systemCode;
     }
     
     clearResult() {
